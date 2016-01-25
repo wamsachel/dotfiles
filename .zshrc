@@ -84,6 +84,14 @@ source $ZSH/oh-my-zsh.sh
 alias whereami='ifconfig | grep "inet " | cut -d " " -f 2'
 alias openssl_verify="openssl verify -CAfile"
 
+function pingsweep() {
+	mkfifo .tmp_subnet;
+	whereami | grep -v -m 1 "^127" | sed 's/\./\*/3' | sed 's/\*.*/\.\*/' > .tmp_subnet &;
+	nmap -sP "`cat .tmp_subnet`";
+	rm .tmp_subnet;
+}
+export -f pingsweep
+
 function der2pem() {openssl x509 -in $1 -inform der;}
 export -f der2pem
 
