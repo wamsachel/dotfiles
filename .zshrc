@@ -81,21 +81,57 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 #alias nmap='noglob nmap'
-alias whereami='ifconfig | grep "inet " | cut -d " " -f 2'
 alias openssl_verify="openssl verify -CAfile"
+alias whereami='ifconfig | grep "inet " | cut -d " " -f 2'
+
+subnet_var='127.0.0.1'
+function local_subnet(){
+	subnet_var=`whereami | grep -v -m 1 "^127" | sed 's/\./\*/3' | sed 's/\*.*/\.\*/'`;
+	export subnet_var
+	echo "Subnet: $my_subnet";
+}
+export -f local_subnet
+local_subnet;  # will ensure the subnet_var gets set
 
 function pingsweep() {
-	mkfifo .tmp_subnet;
-	whereami | grep -v -m 1 "^127" | sed 's/\./\*/3' | sed 's/\*.*/\.\*/' > .tmp_subnet &;
-	nmap -sP "`cat .tmp_subnet`";
-	rm .tmp_subnet;
+	local_subnet;
+	nmap -sP "$subnet_var";
 }
 export -f pingsweep
+
+function portsweep() {
+	local_subnet;
+	nmap "$subnet_var" -p $1
+}
+export -f portsweep
+
+function telnetsweep(){
+	portsweep telnet;
+}
+export -f telnetsweep
+
+function http_sweep(){
+	portsweep http;
+}
+export -f http_sweep
+
+function https_sweep(){
+	portsweep https;
+}
+export -f https_sweep
+
+function sshsweep(){
+	portsweep ssh;
+}
+export -f sshsweep
 
 function der2pem() {openssl x509 -in $1 -inform der;}
 export -f der2pem
 
 function der2text() {openssl x509 -in $1 -inform der -noout -text;}
 export -f der2text
+
+function p12_2text() {openssl pkcs12 -in $1 -out -noout;}
+export -f p12_2text
 
 export PATH=/usr/local/sbin:$PATH
