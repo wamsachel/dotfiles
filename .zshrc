@@ -83,6 +83,8 @@ source $ZSH/oh-my-zsh.sh
 #alias nmap='noglob nmap'
 alias openssl_verify="openssl verify -CAfile"
 alias whereami='ifconfig | grep "inet " | cut -d " " -f 2'
+alias randpass='openssl rand -base64 32 | pbcopy'
+alias lame_randpass='date | md5 | pbcopy'
 
 subnet_var='127.0.0.1'
 function local_subnet(){
