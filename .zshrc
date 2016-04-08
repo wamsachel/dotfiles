@@ -86,6 +86,7 @@ alias whereami='ifconfig | grep "inet " | cut -d " " -f 2'
 alias randpass='openssl rand -base64 32 | pbcopy'
 alias lame_randpass='date | md5 | pbcopy'
 alias flushdns='sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder; say cache flushed'
+alias realip='curl -s checkip.dyndns.org | sed -e "s/.*Current IP Address: //" | cut -d"<" -f1'
 
 subnet_var='127.0.0.1'
 function local_subnet(){
@@ -136,5 +137,11 @@ export -f der2text
 
 function p12_2text() {openssl pkcs12 -in $1 -out -noout;}
 export -f p12_2text
+
+function serve_file() {nc -l 8008 < $1;}
+export -f serve_file
+
+function receive_file() {nc -l 8008 > $1;}
+export -f receive_file
 
 export PATH=/usr/local/sbin:$PATH
