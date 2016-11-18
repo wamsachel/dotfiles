@@ -138,11 +138,11 @@ export -f der2text
 function p12_2text() {openssl pkcs12 -in $1 -out -noout;}
 export -f p12_2text
 
-function serve_file() {nc -l 8008 < $1;}
-export -f serve_file
+function srvf() {nc -l 8008 < $1;}
+export -f srvf
 
-function receive_file() {nc -l 8008 > $1;}
-export -f receive_file
+function rcvf() {nc -l 8008 > $1;}
+export -f rcvf
 
 export PATH=/usr/local/sbin:$PATH
 
